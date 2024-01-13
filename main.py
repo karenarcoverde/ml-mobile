@@ -3,6 +3,7 @@ import numpy as np
 from scipy.interpolate import griddata
 import folium
 from folium.plugins import HeatMap
+import pandas as pd
 
 url = 'http://127.0.0.1:5000/execute_sql'
 
@@ -22,16 +23,16 @@ if response.status_code == 200:
     minIntensity = min(intensity)
     maxIntensity = max(intensity)
 
-    #normalized_intensity = [(i - minIntensity) / (maxIntensity - minIntensity) for i in intensity]
+    normalized_intensity = [(i - minIntensity) / (maxIntensity - minIntensity) for i in intensity]
 
     grid_lat, grid_lon = np.mgrid[min(latitud):max(latitud):100j, min(longitud):max(longitud):100j]
     print(grid_lon)
-    grid_intensity = griddata((latitud, longitud), intensity, (grid_lat, grid_lon), method='nearest')
+    grid_intensity = griddata((latitud, longitud), normalized_intensity, (grid_lat, grid_lon), method='cubic')
 
     flat_grid_intensity = grid_intensity.flatten()
-    #normalized_grid_intensity = [(i - np.nanmin(flat_grid_intensity)) / (np.nanmax(flat_grid_intensity) - np.nanmin(flat_grid_intensity)) for i in flat_grid_intensity]
+    normalized_grid_intensity = [(i - np.nanmin(flat_grid_intensity)) / (np.nanmax(flat_grid_intensity) - np.nanmin(flat_grid_intensity)) for i in flat_grid_intensity]
 
-    interpolated_heatmap_data = [[grid_lat.flatten()[i], grid_lon.flatten()[i], flat_grid_intensity[i]] for i in range(len(flat_grid_intensity)) if not np.isnan(flat_grid_intensity[i])]
+    interpolated_heatmap_data = [[grid_lat.flatten()[i], grid_lon.flatten()[i], normalized_grid_intensity[i]] for i in range(len(normalized_grid_intensity)) if not np.isnan(normalized_grid_intensity[i])]
     print(flat_grid_intensity)
     original_heatmap_data = [[lat, lon, inten] for lat, lon, inten in zip(latitud, longitud, intensity)]
     #print(interpolated_heatmap_data)
@@ -40,6 +41,10 @@ if response.status_code == 200:
     map = folium.Map(location=[-22.9068, -43.1729], zoom_start=10)
 
     HeatMap(interpolated_heatmap_data).add_to(map)
+
+    # Exportar para Excel, se necessário
+    df_cti = pd.DataFrame({'Flat Grid Intensity': normalized_grid_intensity})
+    df_cti.to_excel('intensities_cti.xlsx', index=False)
 
     map.save('heatmap.html')
 else:
