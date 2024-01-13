@@ -18,28 +18,28 @@ if response.status_code == 200:
     latitud = [feature['geometry']['coordinates'][1] for feature in data['features']]
     longitud = [feature['geometry']['coordinates'][0] for feature in data['features']]
     intensity = [feature['properties']['intensity'] for feature in data['features']]
-
+    
     minIntensity = min(intensity)
     maxIntensity = max(intensity)
 
-    normalized_intensity = [(i - minIntensity) / (maxIntensity - minIntensity) for i in intensity]
+    #normalized_intensity = [(i - minIntensity) / (maxIntensity - minIntensity) for i in intensity]
 
     grid_lat, grid_lon = np.mgrid[min(latitud):max(latitud):100j, min(longitud):max(longitud):100j]
-
-    grid_intensity = griddata((latitud, longitud), normalized_intensity, (grid_lat, grid_lon), method='cubic')
+    print(grid_lon)
+    grid_intensity = griddata((latitud, longitud), intensity, (grid_lat, grid_lon), method='nearest')
 
     flat_grid_intensity = grid_intensity.flatten()
-    normalized_grid_intensity = [(i - np.nanmin(flat_grid_intensity)) / (np.nanmax(flat_grid_intensity) - np.nanmin(flat_grid_intensity)) for i in flat_grid_intensity]
+    #normalized_grid_intensity = [(i - np.nanmin(flat_grid_intensity)) / (np.nanmax(flat_grid_intensity) - np.nanmin(flat_grid_intensity)) for i in flat_grid_intensity]
 
-    interpolated_heatmap_data = [[grid_lat.flatten()[i], grid_lon.flatten()[i], normalized_grid_intensity[i]] for i in range(len(normalized_grid_intensity)) if not np.isnan(normalized_grid_intensity[i])]
-
+    interpolated_heatmap_data = [[grid_lat.flatten()[i], grid_lon.flatten()[i], flat_grid_intensity[i]] for i in range(len(flat_grid_intensity)) if not np.isnan(flat_grid_intensity[i])]
+    print(flat_grid_intensity)
     original_heatmap_data = [[lat, lon, inten] for lat, lon, inten in zip(latitud, longitud, intensity)]
-    print(interpolated_heatmap_data)
-    combined_heatmap_data = original_heatmap_data + interpolated_heatmap_data
+    #print(interpolated_heatmap_data)
+    #combined_heatmap_data = original_heatmap_data + interpolated_heatmap_data
 
     map = folium.Map(location=[-22.9068, -43.1729], zoom_start=10)
 
-    HeatMap(combined_heatmap_data, min_opacity=0.5, max_zoom=18, radius=20).add_to(map)
+    HeatMap(interpolated_heatmap_data).add_to(map)
 
     map.save('heatmap.html')
 else:
