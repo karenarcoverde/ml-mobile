@@ -27,7 +27,7 @@ if response.status_code == 200:
 
     grid_lat, grid_lon = np.mgrid[min(latitud):max(latitud):100j, min(longitud):max(longitud):100j]
     print(grid_lon)
-    grid_intensity = griddata((latitud, longitud), normalized_intensity, (grid_lat, grid_lon), method='cubic')
+    grid_intensity = griddata((latitud, longitud), normalized_intensity, (grid_lat, grid_lon), method='linear')
 
     flat_grid_intensity = grid_intensity.flatten()
     normalized_grid_intensity = [(i - np.nanmin(flat_grid_intensity)) / (np.nanmax(flat_grid_intensity) - np.nanmin(flat_grid_intensity)) for i in flat_grid_intensity]
