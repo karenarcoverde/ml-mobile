@@ -106,28 +106,6 @@ for n_clusters in range(2, 11):
 print(silhouette_scores)
 
 
-from sklearn.mixture import GaussianMixture
-from sklearn.metrics import silhouette_score
-import numpy as np
-
-# Supondo que 'featurelist_array' contém as características extraídas das imagens
-featurelist_array = np.array(featurelist)
-
-silhouette_scores = []
-for n_clusters in range(2, 11):
-    # Aplicar Gaussian Mixture Model
-    gmm = GaussianMixture(n_components=n_clusters, random_state=0)
-    gmm.fit(featurelist_array)
-    labels = gmm.predict(featurelist_array)
-
-    # Calcular o Índice Médio de Silhueta
-    silhouette_avg = silhouette_score(featurelist_array, labels)
-    silhouette_scores.append(silhouette_avg)
-    print(f"Índice Médio de Silhueta para {n_clusters} clusters: {silhouette_avg}")
-
-# O resultado será uma lista de valores do Índice de Silhueta para cada número de clusters
-print(silhouette_scores)
-
 from sklearn.cluster import SpectralClustering
 from sklearn.metrics import silhouette_score
 import numpy as np
