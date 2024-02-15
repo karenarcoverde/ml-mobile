@@ -148,3 +148,10 @@ if len(set(labels)) > 1:
     print("Índice Médio de Silhueta:", silhouette_avg)
 else:
     print("Não foi possível calcular o Índice de Silhueta com um único cluster.")
+# Rótulos dos clusters
+labels = meanshift.labels_
+
+# Contar o número de clusters únicos
+num_clusters = len(set(labels))
+
+print("Número de clusters formados:", num_clusters)
