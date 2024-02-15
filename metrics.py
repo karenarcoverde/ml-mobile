@@ -35,20 +35,20 @@ for i, imagepath in enumerate(filelist):
     features = np.array(model.predict(img_data))
     featurelist.append(features.flatten())
 
-# Clustering
-kmeans = KMeans(n_clusters=number_clusters, random_state=0).fit(np.array(featurelist))
+# # Clustering
+# kmeans = KMeans(n_clusters=number_clusters, random_state=0).fit(np.array(featurelist))
 
-# Copy images renamed by cluster 
-# Check if target dir exists
-try:
-    os.makedirs(targetdir)
-except OSError:
-    pass
-# Copy with cluster name
-print("\n")
-for i, m in enumerate(kmeans.labels_):
-    print("    Copy: %s / %s" %(i, len(kmeans.labels_)), end="\r")
-    shutil.copy(filelist[i], targetdir + str(m) + "_" + str(i) + ".jpeg")
+# # Copy images renamed by cluster 
+# # Check if target dir exists
+# try:
+#     os.makedirs(targetdir)
+# except OSError:
+#     pass
+# # Copy with cluster name
+# print("\n")
+# for i, m in enumerate(kmeans.labels_):
+#     print("    Copy: %s / %s" %(i, len(kmeans.labels_)), end="\r")
+#     shutil.copy(filelist[i], targetdir + str(m) + "_" + str(i) + ".jpeg")
 
 from sklearn.metrics import silhouette_score
 
@@ -58,13 +58,12 @@ featurelist_array = np.array(featurelist)
 
 silhouette_scores = []
 for n_clusters in range(2, 11):  # De 2 a 10 clusters
-    kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(featurelist_array)
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0, init = "k-means++", n_init = 10, max_iter = 100, algorithm = "lloyd" ).fit(featurelist_array)
     score = silhouette_score(featurelist_array, kmeans.labels_)
     silhouette_scores.append(score)
-    print(f"Índice Médio de Silhueta para {n_clusters} clusters: {score}")
 
 # O resultado será uma lista de valores do Índice de Silhueta para cada número de clusters
-print(silhouette_scores)
+print("KMEANS - " +silhouette_scores)
 
 featurelist_array = np.array(featurelist)
 
@@ -78,7 +77,7 @@ for n_clusters in range(2, 11):
     silhouette_avg = silhouette_score(featurelist_array, labels)
     silhouette_scores.append(silhouette_avg)
 
-print(silhouette_scores)
+print("birch - " +silhouette_scores)
 
 
 from sklearn.cluster import AgglomerativeClustering
@@ -100,10 +99,9 @@ for n_clusters in range(2, 11):
     # Calcular o Índice Médio de Silhueta
     silhouette_avg = silhouette_score(featurelist_array, labels)
     silhouette_scores.append(silhouette_avg)
-    print(f"Índice Médio de Silhueta para {n_clusters} clusters: {silhouette_avg}")
 
 # O resultado será uma lista de valores do Índice de Silhueta para cada número de clusters
-print(silhouette_scores)
+print("AGGLOMERATIVE - " +silhouette_scores)
 
 
 from sklearn.cluster import SpectralClustering
@@ -122,10 +120,9 @@ for n_clusters in range(2, 11):
     # Calcular o Índice Médio de Silhueta
     silhouette_avg = silhouette_score(featurelist_array, labels)
     silhouette_scores.append(silhouette_avg)
-    print(f"Índice Médio de Silhueta para {n_clusters} clusters: {silhouette_avg}")
 
 # O resultado será uma lista de valores do Índice de Silhueta para cada número de clusters
-print(silhouette_scores)
+print("SPECTRAL - " +silhouette_scores)
 
 from sklearn.cluster import MeanShift
 from sklearn.metrics import silhouette_score
