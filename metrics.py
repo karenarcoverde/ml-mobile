@@ -58,7 +58,7 @@ featurelist_array = np.array(featurelist)
 
 silhouette_scores = []
 for n_clusters in range(2, 11):  # De 2 a 10 clusters
-    kmeans = KMeans(n_clusters=n_clusters, random_state=0, init = "k-means++", n_init = 10, max_iter = 100, algorithm = "lloyd" ).fit(featurelist_array)
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0, init = "k-means++", n_init = 10, max_iter = 100, algorithm = "elkan" ).fit(featurelist_array)
     score = silhouette_score(featurelist_array, kmeans.labels_)
     silhouette_scores.append(score)
 
@@ -72,7 +72,7 @@ silhouette_scores = []
 
 # Calculando o Índice de Silhueta para número de clusters de 2 a 10
 for n_clusters in range(2, 11):
-    birch = Birch(n_clusters=n_clusters, threshold=0.5).fit(featurelist_array)
+    birch = Birch(n_clusters=n_clusters, threshold=0.7, branching_factor = 20).fit(featurelist_array)
     labels = birch.labels_
     silhouette_avg = silhouette_score(featurelist_array, labels)
     silhouette_scores.append(silhouette_avg)
@@ -132,7 +132,7 @@ import numpy as np
 featurelist_array = np.array(featurelist)
 
 # Aplicar o MeanShift
-meanshift = MeanShift(bandwidth=None)  # Bandwidth pode ser ajustado se necessário
+meanshift = MeanShift(bandwidth = None)  # Bandwidth pode ser ajustado se necessário
 meanshift.fit(featurelist_array)
 
 # Rótulos dos clusters
