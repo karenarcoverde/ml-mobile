@@ -52,6 +52,8 @@ for i, m in enumerate(kmeans.labels_):
 
 from sklearn.metrics import silhouette_score
 
+
+from sklearn.cluster import Birch
 featurelist_array = np.array(featurelist)
 
 silhouette_scores = []
@@ -63,3 +65,108 @@ for n_clusters in range(2, 11):  # De 2 a 10 clusters
 
 # O resultado será uma lista de valores do Índice de Silhueta para cada número de clusters
 print(silhouette_scores)
+
+featurelist_array = np.array(featurelist)
+
+# Armazenar os valores do Índice Médio de Silhueta para diferentes números de clusters
+silhouette_scores = []
+
+# Calculando o Índice de Silhueta para número de clusters de 2 a 10
+for n_clusters in range(2, 11):
+    birch = Birch(n_clusters=n_clusters, threshold=0.5).fit(featurelist_array)
+    labels = birch.labels_
+    silhouette_avg = silhouette_score(featurelist_array, labels)
+    silhouette_scores.append(silhouette_avg)
+
+print(silhouette_scores)
+
+
+from sklearn.cluster import AgglomerativeClustering
+from sklearn.metrics import silhouette_score
+import numpy as np
+
+# Supondo que 'featurelist_array' contém as características extraídas das imagens
+featurelist_array = np.array(featurelist)
+
+silhouette_scores = []
+for n_clusters in range(2, 11):
+    # Aplicar o Clustering Hierárquico Aglomerativo
+    agglomerative = AgglomerativeClustering(n_clusters=n_clusters, linkage='ward')
+    agglomerative.fit(featurelist_array)
+
+    # Rótulos dos clusters
+    labels = agglomerative.labels_
+
+    # Calcular o Índice Médio de Silhueta
+    silhouette_avg = silhouette_score(featurelist_array, labels)
+    silhouette_scores.append(silhouette_avg)
+    print(f"Índice Médio de Silhueta para {n_clusters} clusters: {silhouette_avg}")
+
+# O resultado será uma lista de valores do Índice de Silhueta para cada número de clusters
+print(silhouette_scores)
+
+
+from sklearn.mixture import GaussianMixture
+from sklearn.metrics import silhouette_score
+import numpy as np
+
+# Supondo que 'featurelist_array' contém as características extraídas das imagens
+featurelist_array = np.array(featurelist)
+
+silhouette_scores = []
+for n_clusters in range(2, 11):
+    # Aplicar Gaussian Mixture Model
+    gmm = GaussianMixture(n_components=n_clusters, random_state=0)
+    gmm.fit(featurelist_array)
+    labels = gmm.predict(featurelist_array)
+
+    # Calcular o Índice Médio de Silhueta
+    silhouette_avg = silhouette_score(featurelist_array, labels)
+    silhouette_scores.append(silhouette_avg)
+    print(f"Índice Médio de Silhueta para {n_clusters} clusters: {silhouette_avg}")
+
+# O resultado será uma lista de valores do Índice de Silhueta para cada número de clusters
+print(silhouette_scores)
+
+from sklearn.cluster import SpectralClustering
+from sklearn.metrics import silhouette_score
+import numpy as np
+
+# Supondo que 'featurelist_array' contém as características extraídas das imagens
+featurelist_array = np.array(featurelist)
+
+silhouette_scores = []
+for n_clusters in range(2, 11):
+    # Aplicar o Clustering Espectral
+    spectral = SpectralClustering(n_clusters=n_clusters, random_state=0, affinity='nearest_neighbors')
+    labels = spectral.fit_predict(featurelist_array)
+
+    # Calcular o Índice Médio de Silhueta
+    silhouette_avg = silhouette_score(featurelist_array, labels)
+    silhouette_scores.append(silhouette_avg)
+    print(f"Índice Médio de Silhueta para {n_clusters} clusters: {silhouette_avg}")
+
+# O resultado será uma lista de valores do Índice de Silhueta para cada número de clusters
+print(silhouette_scores)
+
+from sklearn.cluster import MeanShift
+from sklearn.metrics import silhouette_score
+import numpy as np
+
+# Supondo que 'featurelist_array' contém as características extraídas das imagens
+featurelist_array = np.array(featurelist)
+
+# Aplicar o MeanShift
+meanshift = MeanShift(bandwidth=None)  # Bandwidth pode ser ajustado se necessário
+meanshift.fit(featurelist_array)
+
+# Rótulos dos clusters
+labels = meanshift.labels_
+
+# Calcular o Índice Médio de Silhueta
+# Deve-se ter pelo menos 2 clusters (excluindo ruído) para calcular o índice
+if len(set(labels)) > 1:
+    silhouette_avg = silhouette_score(featurelist_array, labels)
+    print("Índice Médio de Silhueta:", silhouette_avg)
+else:
+    print("Não foi possível calcular o Índice de Silhueta com um único cluster.")
