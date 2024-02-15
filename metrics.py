@@ -63,7 +63,7 @@ for n_clusters in range(2, 11):  # De 2 a 10 clusters
     silhouette_scores.append(score)
 
 # O resultado será uma lista de valores do Índice de Silhueta para cada número de clusters
-print("KMEANS - " +silhouette_scores)
+print("KMEANS - " +str(silhouette_scores))
 
 featurelist_array = np.array(featurelist)
 
@@ -77,7 +77,7 @@ for n_clusters in range(2, 11):
     silhouette_avg = silhouette_score(featurelist_array, labels)
     silhouette_scores.append(silhouette_avg)
 
-print("birch - " +silhouette_scores)
+print("birch - " +str(silhouette_scores))
 
 
 from sklearn.cluster import AgglomerativeClustering
@@ -101,7 +101,7 @@ for n_clusters in range(2, 11):
     silhouette_scores.append(silhouette_avg)
 
 # O resultado será uma lista de valores do Índice de Silhueta para cada número de clusters
-print("AGGLOMERATIVE - " +silhouette_scores)
+print("AGGLOMERATIVE - " +str(silhouette_scores))
 
 
 from sklearn.cluster import SpectralClustering
@@ -122,7 +122,7 @@ for n_clusters in range(2, 11):
     silhouette_scores.append(silhouette_avg)
 
 # O resultado será uma lista de valores do Índice de Silhueta para cada número de clusters
-print("SPECTRAL - " +silhouette_scores)
+print("SPECTRAL - " +str(silhouette_scores))
 
 from sklearn.cluster import MeanShift
 from sklearn.metrics import silhouette_score
