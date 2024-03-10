@@ -6,6 +6,17 @@ print(accuracy)
 
 correlation = data['predict'].corr(data['correct'])
 print(correlation)
+from sklearn.metrics import f1_score
+
+# Extraindo as colunas 'predict' e 'correct'
+y_pred = data['predict']
+y_true = data['correct']
+
+# Calculando o F1 score
+f1_micro = f1_score(y_true, y_pred, average='micro')
+f1_macro = f1_score(y_true, y_pred, average='macro')
+f1_weighted = f1_score(y_true, y_pred, average='weighted')
+print("teste",f1_micro)
 
 from keras.preprocessing import image
 from keras.applications.vgg16 import VGG16
@@ -27,7 +38,7 @@ filelist = glob.glob(os.path.join(imdir, '*.jpeg'))
 filelist.sort()
 featurelist = []
 for i, imagepath in enumerate(filelist):
-    print("    Status: %s / %s" %(i, len(filelist)), end="\r")
+    #print("    Status: %s / %s" %(i, len(filelist)), end="\r")
     img = image.load_img(imagepath, target_size=(224, 224))
     img_data = image.img_to_array(img)
     img_data = np.expand_dims(img_data, axis=0)
@@ -35,23 +46,54 @@ for i, imagepath in enumerate(filelist):
     features = np.array(model.predict(img_data))
     featurelist.append(features.flatten())
 
+# featurelist = np.array(featurelist).astype('float64')
+
+# kmeans = KMeans(n_clusters=number_clusters, random_state=0).fit(featurelist)
+
+
 # # Clustering
-# kmeans = KMeans(n_clusters=number_clusters, random_state=0).fit(np.array(featurelist))
+kmeans = KMeans(n_clusters=number_clusters, random_state=0).fit(np.array(featurelist))
 
-# # Copy images renamed by cluster 
-# # Check if target dir exists
-# try:
-#     os.makedirs(targetdir)
-# except OSError:
-#     pass
-# # Copy with cluster name
-# print("\n")
-# for i, m in enumerate(kmeans.labels_):
-#     print("    Copy: %s / %s" %(i, len(kmeans.labels_)), end="\r")
-#     shutil.copy(filelist[i], targetdir + str(m) + "_" + str(i) + ".jpeg")
+# Copy images renamed by cluster 
+# Check if target dir exists
+try:
+    os.makedirs(targetdir)
+except OSError:
+    pass
+# Copy with cluster name
+print("\n")
+for i, m in enumerate(kmeans.labels_):
+    #print("    Copy: %s / %s" %(i, len(kmeans.labels_)), end="\r")
+    shutil.copy(filelist[i], targetdir + str(m) + "_" + str(i) + ".jpeg")
 
-from sklearn.metrics import silhouette_score
+def extract_features(image_path):
+    img = image.load_img(image_path, target_size=(224, 224))
+    img_data = image.img_to_array(img)
+    img_data = np.expand_dims(img_data, axis=0)
+    img_data = preprocess_input(img_data)
+    features = np.array(model.predict(img_data))
+    return features.flatten()
 
+# Function to predict clusters for a list of images
+def predict_clusters(image_paths, kmeans_model):
+    feature_list = [extract_features(img_path) for img_path in image_paths]
+    feature_array = np.array(feature_list)  # Convert the list of 1D arrays into a 2D array
+    predictions = kmeans_model.predict(feature_array)
+    return predictions
+
+# Example usage
+imdir = './new_dataset'  # Directory with your new images
+filelist = glob.glob(os.path.join(imdir, '*.jpeg'))
+filelist.sort()
+print(filelist)
+
+cluster_predictions = predict_clusters(filelist, kmeans)
+for img_path, cluster in zip(filelist, cluster_predictions):
+    print(f'{os.path.basename(img_path)} belongs to cluster {cluster}')
+
+
+
+'''
 
 from sklearn.cluster import Birch
 featurelist_array = np.array(featurelist)
@@ -152,3 +194,4 @@ labels = meanshift.labels_
 num_clusters = len(set(labels))
 
 print("Número de clusters formados:", num_clusters)
+'''
