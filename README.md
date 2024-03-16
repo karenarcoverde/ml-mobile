@@ -8,66 +8,66 @@ Número de clusters formados: 4
 
 11.jpeg belongs to cluster 2
 17.jpeg belongs to cluster 2
+22.jpeg belongs to cluster 2
 24.jpeg belongs to cluster 0
-ASUS_AI2201_C.jpeg belongs to cluster 2
-BLU.jpeg belongs to cluster 2
-Blackview.jpeg belongs to cluster 2
+5.jpeg belongs to cluster 2
+F150.jpeg belongs to cluster 2
 HUAWEI.jpeg belongs to cluster 2
-Infinix.jpeg belongs to cluster 2
-Lenovo.jpeg belongs to cluster 2
-M2012K11AG.jpeg belongs to cluster 2
-NOH-NX9.jpeg belongs to cluster 2
-ONEPLUS A5010.jpeg belongs to cluster 2
 OnePlus.jpeg belongs to cluster 2
+P80.jpeg belongs to cluster 2
+PDA.jpeg belongs to cluster 2
 POCO.jpeg belongs to cluster 0
-Pixel 7 Pro.jpeg belongs to cluster 2
-Redmi Note 8.jpeg belongs to cluster 2
-SM-A032M.jpeg belongs to cluster 2
-SM-A546E.jpeg belongs to cluster 2
-SM-G9600.jpeg belongs to cluster 2
-SM-M146B.jpeg belongs to cluster 2
-SM-S901E.jpeg belongs to cluster 2
-Sony.jpeg belongs to cluster 2
+RMX2111L1.jpeg belongs to cluster 2
+TCL.jpeg belongs to cluster 2
 TECTOY.jpeg belongs to cluster 2
-V10.jpeg belongs to cluster 2
+TIM.jpeg belongs to cluster 2
 a02.jpeg belongs to cluster 2
 a12.jpeg belongs to cluster 2
-a22.jpeg belongs to cluster 2
 a32_rsrq.jpeg belongs to cluster 1
-a3core.jpeg belongs to cluster 2
 a50.jpeg belongs to cluster 2
 a52q.jpeg belongs to cluster 2
 a70q.jpeg belongs to cluster 2
 a72q.jpeg belongs to cluster 2
 alps.jpeg belongs to cluster 2
 asus.jpeg belongs to cluster 1
+betalm.jpeg belongs to cluster 2
+blackjack.jpeg belongs to cluster 2
+blackshark.jpeg belongs to cluster 2
+capri.jpeg belongs to cluster 2
 chopin.jpeg belongs to cluster 2
-e2s.jpeg belongs to cluster 2
-exynos2100.jpeg belongs to cluster 2
-kirin9000.jpeg belongs to cluster 2
-lge.jpeg belongs to cluster 2
-m168.jpeg belongs to cluster 2
+f41.jpeg belongs to cluster 2
+java.jpeg belongs to cluster 1
+liber.jpeg belongs to cluster 2
+light.jpeg belongs to cluster 2
+lima.jpeg belongs to cluster 2
+m14x.jpeg belongs to cluster 2
+m30lte.jpeg belongs to cluster 2
 m32.jpeg belongs to cluster 2
-miami.jpeg belongs to cluster 2
-moto e40.jpeg belongs to cluster 2
-moto g(9) play.jpeg belongs to cluster 2
-moto g22.jpeg belongs to cluster 2
-moto g54 5G.jpeg belongs to cluster 2
-moto g73 5G.jpeg belongs to cluster 2
-motorola edge 20.jpeg belongs to cluster 2
-motorola edge 30 pro.jpeg belongs to cluster 2
+m62.jpeg belongs to cluster 2
+moto e22.jpeg belongs to cluster 2
 motorola.jpeg belongs to cluster 0
-mt6833.jpeg belongs to cluster 2
-mt6877.jpeg belongs to cluster 2
+mt6739.jpeg belongs to cluster 2
+mt676.jpeg belongs to cluster 2
+mt6781.jpeg belongs to cluster 1
 multilaser.jpeg belongs to cluster 2
 nokia.jpeg belongs to cluster 2
+nord.jpeg belongs to cluster 2
 philco.jpeg belongs to cluster 2
 positivo.jpeg belongs to cluster 2
 qcom.jpeg belongs to cluster 0
 r0q_rsrq.jpeg belongs to cluster 1
+rav.jpeg belongs to cluster 2
 redmi.jpeg belongs to cluster 0
-rj.jpeg belongs to cluster 0
-s5e8535.jpeg belongs to cluster 2
-s5e8835.jpeg belongs to cluster 0
+river.jpeg belongs to cluster 2
+rubypro.jpeg belongs to cluster 2
+s96pro.jpeg belongs to cluster 2
 samsung_rsrq.jpeg belongs to cluster 0
+samsunggexynos7570.jpeg belongs to cluster 2
+selene.jpeg belongs to cluster 2
+t2s.jpeg belongs to cluster 1
+tectoy_5029y.jpeg belongs to cluster 2
+tundra.jpeg belongs to cluster 2
+unihertz.jpeg belongs to cluster 2
+vili.jpeg belongs to cluster 2
 xiaomi.jpeg belongs to cluster 1
+zeus.jpeg belongs to cluster 2
