@@ -2,77 +2,82 @@ import pandas as pd
 from sklearn.metrics import accuracy_score
 data = pd.read_excel('./predict_correct1.xlsx')
 
-import matplotlib.pyplot as plt
-import pandas as pd
 
-# Carregue seus dados aqui; o exemplo usa um DataFrame 'data' já existente
-# data = pd.read_excel('./seu_arquivo.xlsx') # Descomente e ajuste para seu arquivo
 
-# Vou assumir que você tem o DataFrame 'data' como o que foi descrito
-# A coluna 'number image' será o eixo x e 'predict' a cor
-x = data['number image']
-y = range(len(data))
-clusters = data['predict']
+accuracy = accuracy_score(data['correct'], data['predict'])
+print(accuracy)
 
-# Criar um scatter plot
-plt.figure(figsize=(10, 6))
-plt.scatter(x, y, c=clusters, cmap='viridis')
+correlation = data['predict'].corr(data['correct'])
+print(correlation)
+from sklearn.metrics import f1_score
 
-plt.title('Visualização da Separação dos Clusters')
-plt.xlabel('Número da Imagem')
-plt.ylabel('Índice Artificial')
-plt.colorbar(label='Clusters')
-plt.show()
+# Extraindo as colunas 'predict' e 'correct'
+y_pred = data['predict']
+y_true = data['correct']
 
-# accuracy = accuracy_score(data['correct'], data['predict'])
-# print(accuracy)
+# Calculando o F1 score
+f1_micro = f1_score(y_true, y_pred, average='micro')
+f1_macro = f1_score(y_true, y_pred, average='macro')
+f1_weighted = f1_score(y_true, y_pred, average='weighted')
+print("teste",f1_micro)
 
-# correlation = data['predict'].corr(data['correct'])
-# print(correlation)
-# from sklearn.metrics import f1_score
+from keras.preprocessing import image
+from keras.applications.vgg16 import VGG16
+from keras.applications.vgg16 import preprocess_input
+import numpy as np
+from sklearn.cluster import KMeans
+import os, shutil, glob, os.path
+from PIL import Image as pil_image
+image.LOAD_TRUNCATED_IMAGES = True 
+model = VGG16(weights='imagenet', include_top=False)
 
-# # Extraindo as colunas 'predict' e 'correct'
-# y_pred = data['predict']
-# y_true = data['correct']
+# Variables
+imdir = './dataset/'
+targetdir = "./outdir/"
+number_clusters = 3
 
-# # Calculando o F1 score
-# f1_micro = f1_score(y_true, y_pred, average='micro')
-# f1_macro = f1_score(y_true, y_pred, average='macro')
-# f1_weighted = f1_score(y_true, y_pred, average='weighted')
-# print("teste",f1_micro)
+# Loop over files and get features
+filelist = glob.glob(os.path.join(imdir, '*.jpeg'))
+filelist.sort()
+featurelist = []
+for i, imagepath in enumerate(filelist):
+    #print("    Status: %s / %s" %(i, len(filelist)), end="\r")
+    img = image.load_img(imagepath, target_size=(224, 224))
+    img_data = image.img_to_array(img)
+    img_data = np.expand_dims(img_data, axis=0)
+    img_data = preprocess_input(img_data)
+    features = np.array(model.predict(img_data))
+    featurelist.append(features.flatten())
 
-# from keras.preprocessing import image
-# from keras.applications.vgg16 import VGG16
-# from keras.applications.vgg16 import preprocess_input
-# import numpy as np
-# from sklearn.cluster import KMeans
-# import os, shutil, glob, os.path
-# from PIL import Image as pil_image
-# image.LOAD_TRUNCATED_IMAGES = True 
-# model = VGG16(weights='imagenet', include_top=False)
+featurelist = np.array(featurelist).astype('float64')
+kmeans = KMeans(n_clusters=number_clusters, random_state=0).fit(featurelist)
 
-# # Variables
-# imdir = './dataset/'
-# targetdir = "./outdir/"
-# number_clusters = 3
+# from sklearn.decomposition import PCA
+# import matplotlib.pyplot as plt
 
-# # Loop over files and get features
-# filelist = glob.glob(os.path.join(imdir, '*.jpeg'))
-# filelist.sort()
-# featurelist = []
-# for i, imagepath in enumerate(filelist):
-#     #print("    Status: %s / %s" %(i, len(filelist)), end="\r")
-#     img = image.load_img(imagepath, target_size=(224, 224))
-#     img_data = image.img_to_array(img)
-#     img_data = np.expand_dims(img_data, axis=0)
-#     img_data = preprocess_input(img_data)
-#     features = np.array(model.predict(img_data))
-#     featurelist.append(features.flatten())
+# # Você já tem 'featurelist' como um array numpy, então vamos direto para o PCA
 
-# # featurelist = np.array(featurelist).astype('float64')
+# # Inicializar o PCA para reduzir para 2 dimensões
+# pca = PCA(n_components=2)
+# reduced_features = pca.fit_transform(featurelist)
 
-# # kmeans = KMeans(n_clusters=number_clusters, random_state=0).fit(featurelist)
+# # O resto do código está correto. Recuperar os rótulos dos clusters
+# cluster_labels = kmeans.labels_
 
+# # E continuar com a plotagem como antes
+# plt.figure(figsize=(8, 8))
+# scatter = plt.scatter(reduced_features[:, 0], reduced_features[:, 1], c=cluster_labels, cmap='viridis')
+
+# # Adicionar título e rótulos aos eixos
+# plt.title('KMeans Cluster Division')
+# plt.xlabel('PCA Feature 1')
+# plt.ylabel('PCA Feature 2')
+
+# # Adicionar a legenda com as cores dos clusters
+# plt.legend(*scatter.legend_elements(), title="Clusters")
+
+# # Exibir o gráfico
+# plt.show()
 
 # # # Clustering
 # kmeans = KMeans(n_clusters=number_clusters, random_state=0).fit(np.array(featurelist))
@@ -89,34 +94,63 @@ plt.show()
 #     #print("    Copy: %s / %s" %(i, len(kmeans.labels_)), end="\r")
 #     shutil.copy(filelist[i], targetdir + str(m) + "_" + str(i) + ".jpeg")
 
-# def extract_features(image_path):
-#     img = image.load_img(image_path, target_size=(224, 224))
-#     img_data = image.img_to_array(img)
-#     img_data = np.expand_dims(img_data, axis=0)
-#     img_data = preprocess_input(img_data)
-#     features = np.array(model.predict(img_data))
-#     return features.flatten()
+def extract_features(image_path):
+    img = image.load_img(image_path, target_size=(224, 224))
+    img_data = image.img_to_array(img)
+    img_data = np.expand_dims(img_data, axis=0)
+    img_data = preprocess_input(img_data)
+    features = np.array(model.predict(img_data))
+    return features.flatten()
 
-# # Function to predict clusters for a list of images
-# def predict_clusters(image_paths, kmeans_model):
-#     feature_list = [extract_features(img_path) for img_path in image_paths]
-#     feature_array = np.array(feature_list)  # Convert the list of 1D arrays into a 2D array
-#     predictions = kmeans_model.predict(feature_array)
-#     return predictions
-
-# # Example usage
-# imdir = './new_dataset'  # Directory with your new images
-# filelist = glob.glob(os.path.join(imdir, '*.jpeg'))
-# filelist.sort()
-# print(filelist)
-
-# cluster_predictions = predict_clusters(filelist, kmeans)
-# for img_path, cluster in zip(filelist, cluster_predictions):
-#     print(f'{os.path.basename(img_path)} belongs to cluster {cluster}')
+# Function to predict clusters for a list of images
+def predict_clusters(image_paths, kmeans_model):
+    feature_list = [extract_features(img_path) for img_path in image_paths]
+    feature_array = np.array(feature_list)  # Convert the list of 1D arrays into a 2D array
+    predictions = kmeans_model.predict(feature_array)
+    return predictions
 
 
-# new_featurelist = [extract_features(img_path) for img_path in filelist]
-# new_featurelist_array = np.array(new_featurelist)  # Convert list to array
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+from keras.preprocessing import image
+from keras.applications.vgg16 import VGG16, preprocess_input
+from sklearn.cluster import KMeans
+import os, glob
+
+# Caminho para o novo conjunto de imagens
+imdir = './new_dataset'
+
+# Lista os arquivos de imagem no diretório
+filelist = glob.glob(os.path.join(imdir, '*.jpeg'))
+filelist.sort()
+
+# Extraia as características das novas imagens
+new_feature_list = [extract_features(img_path) for img_path in filelist]
+new_feature_array = np.array(new_feature_list, dtype=np.float32)  # Converter para float32
+
+# Predições dos clusters para o novo conjunto de características
+kmeans = KMeans(n_clusters=number_clusters, random_state=0).fit(new_feature_array)
+cluster_predictions = kmeans.predict(new_feature_array)
+
+# Aplicar PCA para reduzir a dimensionalidade para 2 componentes
+pca = PCA(n_components=2)
+reduced_new_features = pca.fit_transform(new_feature_array)
+
+# Plotar os recursos reduzidos com as previsões de cluster
+plt.figure(figsize=(8, 8))
+scatter = plt.scatter(reduced_new_features[:, 0], reduced_new_features[:, 1], c=cluster_predictions, cmap='viridis')
+
+# Adicionar título e rótulos aos eixos
+plt.title('New Images PCA Cluster Division')
+plt.xlabel('PCA Feature 1')
+plt.ylabel('PCA Feature 2')
+
+# Adicionar a legenda com as cores dos clusters
+plt.legend(*scatter.legend_elements(), title="Clusters")
+
+# Exibir o gráfico
+plt.show()
 
 # from sklearn.metrics import silhouette_score
 # from sklearn.cluster import Birch
