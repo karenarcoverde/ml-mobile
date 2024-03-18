@@ -14,7 +14,7 @@ from sklearn.metrics import silhouette_score
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.cluster import SpectralClustering
 from sklearn.cluster import Birch
-
+from sklearn.decomposition import PCA
 
 
 def extract_features(image_path):
@@ -63,14 +63,29 @@ for i, imagepath in enumerate(filelist):
     featurelist.append(features.flatten())
 
 featurelist = np.array(featurelist).astype('float64')
+pca = PCA(n_components=2)  # You can vary n_components to test different levels of dimensionality reduction
+pca_featurelist = pca.fit_transform(featurelist)
+# # Clustering
+kmeans = KMeans(n_clusters=number_clusters, random_state=0).fit(np.array(pca_featurelist))
+
+# Copy images renamed by cluster 
+# Check if target dir exists
+try:
+    os.makedirs(targetdir)
+except OSError:
+    pass
+# Copy with cluster name
+print("\n")
+for i, m in enumerate(kmeans.labels_):
+    #print("    Copy: %s / %s" %(i, len(kmeans.labels_)), end="\r")
+    shutil.copy(filelist[i], targetdir + str(m) + "_" + str(i) + ".jpeg")
 
 featurelist_array = np.array(featurelist, dtype=np.float32)
 
-
 silhouette_scores = []
 for n_clusters in range(2, 11):
-    kmeans = KMeans(n_clusters=n_clusters, random_state=0, init = "k-means++", n_init = 10, max_iter = 100, algorithm = "elkan" ).fit(featurelist_array)
-    score = silhouette_score(featurelist_array, kmeans.labels_)
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0, init = "k-means++", n_init = 10, max_iter = 100, algorithm = "elkan" ).fit(pca_featurelist)
+    score = silhouette_score(pca_featurelist, kmeans.labels_)
     silhouette_scores.append(score)
 
 print("KMEANS - " +str(silhouette_scores))
@@ -78,9 +93,9 @@ print("KMEANS - " +str(silhouette_scores))
 silhouette_scores = []
 
 for n_clusters in range(2, 11):
-    birch = Birch(n_clusters=n_clusters, threshold=0.7, branching_factor = 20).fit(featurelist_array)
+    birch = Birch(n_clusters=n_clusters, threshold=0.7, branching_factor = 20).fit(pca_featurelist)
     labels = birch.labels_
-    silhouette_avg = silhouette_score(featurelist_array, labels)
+    silhouette_avg = silhouette_score(pca_featurelist, labels)
     silhouette_scores.append(silhouette_avg)
 
 print("birch - " +str(silhouette_scores))
@@ -88,11 +103,11 @@ print("birch - " +str(silhouette_scores))
 silhouette_scores = []
 for n_clusters in range(2, 11):
     agglomerative = AgglomerativeClustering(n_clusters=n_clusters, linkage='ward')
-    agglomerative.fit(featurelist_array)
+    agglomerative.fit(pca_featurelist)
 
     labels = agglomerative.labels_
 
-    silhouette_avg = silhouette_score(featurelist_array, labels)
+    silhouette_avg = silhouette_score(pca_featurelist, labels)
     silhouette_scores.append(silhouette_avg)
 
 print("AGGLOMERATIVE - " +str(silhouette_scores))
@@ -101,9 +116,9 @@ print("AGGLOMERATIVE - " +str(silhouette_scores))
 silhouette_scores = []
 for n_clusters in range(2, 11):
     spectral = SpectralClustering(n_clusters=n_clusters, random_state=0, affinity='nearest_neighbors')
-    labels = spectral.fit_predict(featurelist_array)
+    labels = spectral.fit_predict(pca_featurelist)
 
-    silhouette_avg = silhouette_score(featurelist_array, labels)
+    silhouette_avg = silhouette_score(pca_featurelist, labels)
     silhouette_scores.append(silhouette_avg)
 
 print("SPECTRAL - " +str(silhouette_scores))
