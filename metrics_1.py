@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from keras.preprocessing import image
 from keras.applications.vgg16 import VGG16, preprocess_input
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, Birch, SpectralClustering, AgglomerativeClustering
 import os, glob
 from matplotlib.colors import ListedColormap
 from sklearn.metrics import silhouette_score
@@ -173,3 +173,22 @@ for n_clusters in range(2, 11):
     silhouette_scores.append(silhouette_avg)
 
 print("birch - " +str(silhouette_scores))
+
+
+# Spectral Clustering
+silhouette_scores = []
+for n_clusters in range(2, 11):
+    spectral = SpectralClustering(n_clusters=n_clusters, random_state=0, affinity='nearest_neighbors').fit(reduced_new_features)
+    predictions = spectral.labels_
+    score = silhouette_score(reduced_new_features, predictions)
+    silhouette_scores.append(score)
+print("Spectral Clustering Silhouette Scores:", silhouette_scores)
+
+# Agglomerative Clustering
+silhouette_scores = []
+for n_clusters in range(2, 11):
+    agglomerative = AgglomerativeClustering(n_clusters=n_clusters, linkage='ward').fit(reduced_new_features)
+    predictions = agglomerative.labels_
+    score = silhouette_score(reduced_new_features, predictions)
+    silhouette_scores.append(score)
+print("Agglomerative Clustering Silhouette Scores:", silhouette_scores)
